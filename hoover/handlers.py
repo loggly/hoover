@@ -28,7 +28,6 @@ class LogglyHttpHandler(logging.Handler):
             pass
 
     def emit(self,record):
-        # TODO: find out whether this comes for free
         msg = self.format(record)
         async_post_to_endpoint(self.endpoint, msg)
 
