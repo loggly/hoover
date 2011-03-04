@@ -35,3 +35,26 @@ def html_inputs():
     if not 'inputs' in confs:
         inputs_init()
     return [i for i in confs['inputs'] if i['service']['name'] == 'HTTP']
+
+def async(func):
+    '''Awesome decorator for asyncronizing functions.
+
+    Don't use this if you care about return value.'''
+    from threading import Thread
+    class FuncRunner(Thread):
+        def __init__(self, args, kwargs):
+            super(FuncRunner, self).__init__()
+            self.args = args
+            self.kwargs = kwargs
+
+        def run(self):
+            func(*(self.args), **(self.kwargs))
+
+    def newfunc(*args, **kwargs):
+        FuncRunner(args, kwargs).start()
+
+    # be nice on the terminal
+    newfunc.__name__ = func.__name__
+    newfunc.__doc__ = func.__doc__
+
+    return newfunc
