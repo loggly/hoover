@@ -58,3 +58,8 @@ def async(func):
     newfunc.__doc__ = func.__doc__
 
     return newfunc
+
+@async
+def async_post_to_endpoint(endpoint, message):
+    h = Http()
+    h.request(endpoint, 'POST', message)

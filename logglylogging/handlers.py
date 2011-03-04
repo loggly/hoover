@@ -1,6 +1,6 @@
 import logging
 
-from logglylogging.utils import html_inputs
+from logglylogging.utils import html_inputs, async_post_to_endpoint
 
 class LogglyHandler(logging.Handler):
     pass
@@ -22,12 +22,16 @@ class LogglyHttpHandler(LogglyHandler):
                 #TODO
                 raise
         self.token = token
+        self.endpoint = "https://logs.loggly.com/inputs/%s" % token
         # TODO: verify we can write to the input
         if announce:
             # TODO: grab this boxes' IP, and announce logging to the input
             pass
-            
 
+    def emit(self,record):
+        # TODO: find out whether this comes for free
+        msg = self.format(record)
+        async_post_to_endpoint(self.endpoint, msg)
 
 class LogglySyslogHandler(LogglyHandler):
     pass
