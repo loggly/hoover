@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import SysLogHandler
 
-from hoover.utils import html_inputs, async_post_to_endpoint
+from hoover.utils import html_inputs, async_post_to_endpoint, get_inputs
 
 class LogglyHttpHandler(logging.Handler):
     def __init__ (self, token='', inputname='', input=None, announce=False):
@@ -32,4 +32,23 @@ class LogglyHttpHandler(logging.Handler):
         async_post_to_endpoint(self.endpoint, msg)
 
 class LogglySyslogHandler(SysLogHandler):
-    pass
+    def __init__ (self, port=None, inputname='', input=None, announce=False,
+                  **kwargs):
+        #TODO: avoid duplication with __init__ above
+        if inputname:
+            try:
+                (input,) = [i for i in get_inputs() if i['name'] == inputname]
+            except:
+                #TODO
+                raise
+        if input:
+            self.inputobj = input
+            try:
+                port = input['port']
+                self.inputname = input['name']
+            except:
+                #TODO
+                raise
+        self.port = port
+        SysLogHandler.__init__(self, address=('logs.loggly.com', port),
+                               **kwargs)
