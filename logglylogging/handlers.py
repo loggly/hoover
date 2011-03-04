@@ -5,6 +5,7 @@ from logglylogging.utils import html_inputs, async_post_to_endpoint
 
 class LogglyHttpHandler(logging.Handler):
     def __init__ (self, token='', inputname='', input=None, announce=False):
+        logging.Handler.__init__(self)
         if inputname:
             try:
                 (input,) = [i for i in html_inputs() if i['name'] == inputname]
