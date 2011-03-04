@@ -33,10 +33,13 @@ def inputs_init():
     inputs = api_help('api/inputs')
     confs['inputs'] = inputs
 
-def html_inputs():
+def get_inputs():
     if not 'inputs' in confs:
         inputs_init()
-    return [i for i in confs['inputs'] if i['service']['name'] == 'HTTP']
+    return confs['inputs']
+
+def html_inputs():
+    return [i for i in get_inputs() if i['service']['name'] == 'HTTP']
 
 def config_inputs():
     from hoover.handlers import LogglyHttpHandler
