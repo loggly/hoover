@@ -26,3 +26,7 @@ def api_help(endpoint, params={}, method='GET'):
         return loads(results)
     except:
         return results
+
+def inputs_init():
+    inputs = api_help('api/inputs')
+    confs['inputs'] = inputs
