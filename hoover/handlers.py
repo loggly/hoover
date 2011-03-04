@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import SysLogHandler
 
-from logglylogging.utils import html_inputs, async_post_to_endpoint
+from hoover.utils import html_inputs, async_post_to_endpoint
 
 class LogglyHttpHandler(logging.Handler):
     def __init__ (self, token='', inputname='', input=None, announce=False):

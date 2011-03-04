@@ -1,7 +1,8 @@
-from logglylogging import confs, exceptions
 from httplib2 import Http
 from urllib import urlencode
 from simplejson import loads
+
+from hoover import confs, exceptions
 
 def api_help(endpoint, params={}, method='GET'):
     try:

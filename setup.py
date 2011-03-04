@@ -7,5 +7,5 @@ setup(name='Loggly Logger',
       author_email="mike@loggly.com",
       # fix this
       url="http://www.loggly.com",
-      packages=['logglylogging']
+      packages=['hoover']
 )
