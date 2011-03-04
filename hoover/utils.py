@@ -1,6 +1,9 @@
 from httplib2 import Http
 from urllib import urlencode
-from simplejson import loads
+try:
+    from simplejson import loads
+except:
+    from json import loads
 import logging
 
 from hoover import confs, exceptions
