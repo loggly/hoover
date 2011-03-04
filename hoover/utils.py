@@ -1,6 +1,7 @@
 from httplib2 import Http
 from urllib import urlencode
 from simplejson import loads
+import logging
 
 from hoover import confs, exceptions
 
@@ -36,6 +37,14 @@ def html_inputs():
     if not 'inputs' in confs:
         inputs_init()
     return [i for i in confs['inputs'] if i['service']['name'] == 'HTTP']
+
+def config_inputs():
+    from hoover.handlers import LogglyHttpHandler
+    #for now just does HTML inputs...
+    for input in html_inputs():
+        handler = LogglyHttpHandler(input=input)
+        logger = logging.getLogger(input['name'])
+        logger.addHandler(handler)
 
 def async(func):
     '''Awesome decorator for asyncronizing functions.
