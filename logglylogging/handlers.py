@@ -1,11 +1,9 @@
 import logging
+from logging.handlers import SysLogHandler
 
 from logglylogging.utils import html_inputs, async_post_to_endpoint
 
-class LogglyHandler(logging.Handler):
-    pass
-
-class LogglyHttpHandler(LogglyHandler):
+class LogglyHttpHandler(logging.Handler):
     def __init__ (self, token='', inputname='', input=None, announce=False):
         if inputname:
             try:
@@ -33,5 +31,5 @@ class LogglyHttpHandler(LogglyHandler):
         msg = self.format(record)
         async_post_to_endpoint(self.endpoint, msg)
 
-class LogglySyslogHandler(LogglyHandler):
+class LogglySyslogHandler(SysLogHandler):
     pass
