@@ -30,3 +30,8 @@ def api_help(endpoint, params={}, method='GET'):
 def inputs_init():
     inputs = api_help('api/inputs')
     confs['inputs'] = inputs
+
+def html_inputs():
+    if not 'inputs' in confs:
+        inputs_init()
+    return [i for i in confs['inputs'] if i['service']['name'] == 'HTTP']
