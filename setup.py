@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='Loggly Logger',
       version='0.1',
@@ -7,5 +7,6 @@ setup(name='Loggly Logger',
       author_email="mike@loggly.com",
       # fix this
       url="http://www.loggly.com",
-      packages=['hoover']
+      packages=['hoover'],
+      install_requires=['httplib2'],
 )
