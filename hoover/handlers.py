@@ -49,6 +49,8 @@ class LogglySyslogHandler(SysLogHandler):
             except:
                 #TODO
                 raise
+            if port == 514:
+                utils.api_help('api/inputs/%s/add514' % input['id'])
         self.port = port
         SysLogHandler.__init__(self, address=('logs.loggly.com', port),
                                **kwargs)
