@@ -1,3 +1,5 @@
+'''A couple of logging handlers which should play nicely with the Python logging
+library.'''
 import logging
 from logging.handlers import SysLogHandler
 
