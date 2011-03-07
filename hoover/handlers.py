@@ -14,8 +14,7 @@ class LogglyHttpHandler(logging.Handler):
                 token = input.input_token
                 self.inputname = input.name
             except:
-                #TODO
-                raise
+                raise ValueError('This is not an HTTP input')
         self.token = token
         self.endpoint = "https://logs.loggly.com/inputs/%s" % token
         # TODO: verify we can write to the input
@@ -39,8 +38,7 @@ class LogglySyslogHandler(SysLogHandler):
                 port = input.port
                 self.inputname = input.name
             except:
-                #TODO
-                raise
+                raise ValueError("This doesn't look like a syslog input")
             if port == 514:
                 utils.api_help('api/inputs/%s/add514' % input['id'])
         self.port = port

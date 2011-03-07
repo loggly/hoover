@@ -7,6 +7,7 @@ except:
 import logging
 
 from hoover import confs, exceptions
+from hoover.exceptions import NotFound
 
 def api_help(endpoint, params={}, method='GET'):
     try:
@@ -14,7 +15,8 @@ def api_help(endpoint, params={}, method='GET'):
         username = confs['auth']['username']
         password = confs['auth']['password']
     except KeyError as e:
-        raise exceptions.AuthFail('no %s set in conf' % e.args[0])
+        raise exceptions.AuthFail('no %s set in conf. Please run '
+                                  'hoover.authorize' % e.args[0])
     h=Http()
     h.add_credentials(username, password)
     url = 'https://%s.loggly.com/%s' % (subdomain, endpoint)
@@ -49,8 +51,7 @@ def get_input_by_name(name):
     try:
         (result,) = [i for i in get_inputs() if i.name == name]
     except:
-        #TODO
-        raise
+        raise NotFound('Input %s not found.' % name)
     return result
 
 def config_inputs():
