@@ -8,15 +8,15 @@ class LogglyHttpHandler(logging.Handler):
         logging.Handler.__init__(self)
         if inputname:
             try:
-                (input,) = [i for i in utils.html_inputs() if i['name'] == inputname]
+                (input,) = [i for i in utils.html_inputs() if i.name == inputname]
             except:
                 # TODO: create/raise appropriate exception
                 raise
         if input:
             self.inputobj = input
             try:
-                token = input['input_token']
-                self.inputname = input['name']
+                token = input.input_token
+                self.inputname = input.name
             except:
                 #TODO
                 raise
@@ -37,15 +37,15 @@ class LogglySyslogHandler(SysLogHandler):
         #TODO: avoid duplication with __init__ above
         if inputname:
             try:
-                (input,) = [i for i in utils.get_inputs() if i['name'] == inputname]
+                (input,) = [i for i in utils.get_inputs() if i.name == inputname]
             except:
                 #TODO
                 raise
         if input:
             self.inputobj = input
             try:
-                port = input['port']
-                self.inputname = input['name']
+                port = input.port
+                self.inputname = input.name
             except:
                 #TODO
                 raise

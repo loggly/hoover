@@ -7,6 +7,7 @@ except:
 import logging
 
 from hoover import confs, exceptions
+from hoover.input import LogglyInput
 
 def api_help(endpoint, params={}, method='GET'):
     try:
@@ -34,7 +35,7 @@ def api_help(endpoint, params={}, method='GET'):
 
 def inputs_init():
     inputs = api_help('api/inputs')
-    confs['inputs'] = inputs
+    confs['inputs'] = [LogglyInput(i) for  i in inputs]
 
 def get_inputs():
     if not 'inputs' in confs:
@@ -42,14 +43,14 @@ def get_inputs():
     return confs['inputs']
 
 def html_inputs():
-    return [i for i in get_inputs() if i['service']['name'] == 'HTTP']
+    return [i for i in get_inputs() if i.service['name'] == 'HTTP']
 
 def config_inputs():
     from hoover.handlers import LogglyHttpHandler
     #for now just does HTML inputs...
     for input in html_inputs():
         handler = LogglyHttpHandler(input=input)
-        logger = logging.getLogger(input['name'])
+        logger = logging.getLogger(input.name)
         logger.addHandler(handler)
 
 def async(func):
