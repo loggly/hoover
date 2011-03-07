@@ -7,7 +7,6 @@ except:
 import logging
 
 from hoover import confs, exceptions
-from hoover.input import LogglyInput
 
 def api_help(endpoint, params={}, method='GET'):
     try:
@@ -34,6 +33,7 @@ def api_help(endpoint, params={}, method='GET'):
         return results
 
 def inputs_init():
+    from hoover.input import LogglyInput
     inputs = api_help('api/inputs')
     confs['inputs'] = [LogglyInput(i) for  i in inputs]
 
