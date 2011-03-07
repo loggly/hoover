@@ -24,7 +24,7 @@ class LogglyHttpHandler(logging.Handler):
             # TODO: grab this boxes' IP, and announce logging to the input
             pass
 
-    def emit(self,record):
+    def emit(self, record):
         msg = self.format(record)
         utils.async_post_to_endpoint(self.endpoint, msg)
 

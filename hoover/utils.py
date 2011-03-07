@@ -2,21 +2,21 @@ from httplib2 import Http
 from urllib import urlencode
 try:
     from simplejson import loads
-except:
+except ImportError:
     from json import loads
 import logging
 
 from hoover import confs, exceptions
 from hoover.exceptions import NotFound
 
-def api_help(endpoint, params={}, method='GET'):
+def api_help(endpoint, params=None, method='GET'):
     try:
         subdomain = confs['subdomain']
         username = confs['auth']['username']
         password = confs['auth']['password']
-    except KeyError as e:
+    except KeyError as key:
         raise exceptions.AuthFail('no %s set in conf. Please run '
-                                  'hoover.authorize' % e.args[0])
+                                  'hoover.authorize' % key.args[0])
     h=Http()
     h.add_credentials(username, password)
     url = 'https://%s.loggly.com/%s' % (subdomain, endpoint)
@@ -31,7 +31,7 @@ def api_help(endpoint, params={}, method='GET'):
     # TODO check status, raise appropriate errors or something
     try:
         return loads(results)
-    except:
+    except ValueError:
         return results
 
 def inputs_init():
