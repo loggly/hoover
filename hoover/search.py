@@ -6,4 +6,4 @@ def search(q='*', **kwargs):
 
 def facets(q='*', facetby='date', **kwargs):
     kwargs['q'] = q
-    return search_helper('api/facets/%s' % facetby, kwargs)
+    return api_help('api/facets/%s' % facetby, kwargs)
