@@ -45,6 +45,14 @@ def get_inputs():
 def html_inputs():
     return [i for i in get_inputs() if i.service['name'] == 'HTTP']
 
+def get_input_by_name(name):
+    try:
+        (result,) = [i for i in get_inputs() if i.name == name]
+    except:
+        #TODO
+        raise
+    return result
+
 def config_inputs():
     from hoover.handlers import LogglyHttpHandler
     #for now just does HTML inputs...

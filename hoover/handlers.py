@@ -7,11 +7,7 @@ class LogglyHttpHandler(logging.Handler):
     def __init__ (self, token='', inputname='', input=None, announce=False):
         logging.Handler.__init__(self)
         if inputname:
-            try:
-                (input,) = [i for i in utils.html_inputs() if i.name == inputname]
-            except:
-                # TODO: create/raise appropriate exception
-                raise
+            input = utils.get_input_by_name(inputname)
         if input:
             self.inputobj = input
             try:
@@ -36,11 +32,7 @@ class LogglySyslogHandler(SysLogHandler):
                   **kwargs):
         #TODO: avoid duplication with __init__ above
         if inputname:
-            try:
-                (input,) = [i for i in utils.get_inputs() if i.name == inputname]
-            except:
-                #TODO
-                raise
+            input = utils.get_input_by_name(inputname)
         if input:
             self.inputobj = input
             try:
