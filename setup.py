@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='Loggly Logger',
+setup(name='Hoover',
       version='0.1',
       description="Library for logging to Loggly from within Python webapps",
       author="Mike Blume",
