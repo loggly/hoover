@@ -1,1 +1,4 @@
 *.pyc
+Hoover.egg-info
+build
+dist
