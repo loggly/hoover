@@ -17,7 +17,7 @@ def api_help(endpoint, params=None, method='GET'):
     except KeyError as key:
         raise exceptions.AuthFail('no %s set in conf. Please run '
                                   'hoover.authorize' % key.args[0])
-    h=Http()
+    h = Http()
     h.add_credentials(username, password)
     url = 'https://%s.loggly.com/%s' % (subdomain, endpoint)
     if method == 'GET':
