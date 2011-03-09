@@ -24,8 +24,10 @@ def api_help(endpoint, params=None, method='GET'):
         body = ''
         if params:
             url += '?' + urlencode(params)
-    else:
+    elif params:
         body = urlencode(params)
+    else:
+        body = ''
     headers, results =  h.request(url, method, body)
     status = headers['status']
     if int(status) == 401:
