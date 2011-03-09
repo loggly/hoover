@@ -42,7 +42,10 @@ class LogglySyslogHandler(SysLogHandler):
             except:
                 raise ValueError("This doesn't look like a syslog input")
             if port == 514:
-                utils.api_help('api/inputs/%s/add514' % input['id'])
+                utils.api_help('api/inputs/%s/add514' % input.id)
+            else:
+                utils.api_help('api/inputs/%s/adddevice' % input.id,
+                               method='POST')
         self.port = port
         SysLogHandler.__init__(self, address=('logs.loggly.com', port),
                                **kwargs)
