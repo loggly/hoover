@@ -53,7 +53,7 @@ def html_inputs():
 def get_input_by_name(name):
     try:
         (result,) = [i for i in get_inputs() if i.name == name]
-    except:
+    except ValueError:
         raise NotFound('Input %s not found.' % name)
     return result
 
