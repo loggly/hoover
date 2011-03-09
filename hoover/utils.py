@@ -28,6 +28,9 @@ def api_help(endpoint, params=None, method='GET'):
         body = urlencode(params)
     headers, results =  h.request(url, method, body)
     status = headers['status']
+    if int(status) == 401:
+        raise exceptions.AuthFail('Sorry, your authentication was not '
+                                  'accepted.')
     # TODO check status, raise appropriate errors or something
     try:
         return loads(results)
