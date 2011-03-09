@@ -90,7 +90,7 @@ def async(func):
 
     return newfunc
 
-@async
-def async_post_to_endpoint(endpoint, message):
+def post_to_endpoint(endpoint, message):
     h = Http()
     h.request(endpoint, 'POST', message)
+async_post_to_endpoint = async(post_to_endpoint)
