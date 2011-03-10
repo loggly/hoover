@@ -1,4 +1,4 @@
-'''A handy library for logging to, and searching Loggly.'''
+'''A handy library for logging to, and searching, Loggly.'''
 confs = {
     'auth'  : {},
 }
