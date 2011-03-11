@@ -1,3 +1,5 @@
+from hoover import confs
+from hoover.utils import api_help, get_inputs
 from hoover.handlers import LogglyHttpHandler, LogglySyslogHandler
 
 class LogglyInput(object):
@@ -22,3 +24,25 @@ class LogglyInput(object):
         from hoover.search import facets as facets_main
         q = '%s inputname:%s' % (q, self.name)
         return facets_main(q, **kwargs)
+
+    @classmethod
+    def create(cls, name, service='syslogudp'):
+        result = api_help('/api/inputs', {'name': name, 'service': service},
+                          method='POST')
+        try:
+            newinput = cls(result)
+        except:
+            #TODO
+            raise
+        get_inputs()
+        confs['inputs'].append(newinput)
+        return newinput
+
+    def delete(self):
+        get_inputs()
+        api_help('api/inputs/%s' % self.id, method='DELETE')
+        confs['inputs'].remove(self)
+
+    def set_discover(self, state=True):
+        method = state and 'POST' or 'DELETE'
+        api_help('api/inputs/%s/discover' % self.id, method=method)
