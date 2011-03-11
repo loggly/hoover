@@ -30,7 +30,7 @@ class LogglyHttpHandler(logging.Handler):
 
 class LogglySyslogHandler(SysLogHandler):
     def __init__ (self, port=None, inputname='', input=None, announce=False,
-                  **kwargs):
+                  authorize=True, **kwargs):
         #TODO: avoid duplication with __init__ above
         if inputname:
             input = utils.get_input_by_name(inputname)
@@ -41,11 +41,12 @@ class LogglySyslogHandler(SysLogHandler):
                 self.inputname = input.name
             except:
                 raise ValueError("This doesn't look like a syslog input")
-            if port == 514:
-                utils.api_help('api/inputs/%s/add514' % input.id)
-            else:
-                utils.api_help('api/inputs/%s/adddevice' % input.id,
-                               method='POST')
+            if authorize:
+                if port == 514:
+                    utils.api_help('api/inputs/%s/add514' % input.id)
+                else:
+                    utils.api_help('api/inputs/%s/adddevice' % input.id,
+                                   method='POST')
         self.port = port
         SysLogHandler.__init__(self, address=('logs.loggly.com', port),
                                **kwargs)
