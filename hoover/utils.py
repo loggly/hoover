@@ -14,12 +14,13 @@ def api_help(endpoint, params=None, method='GET'):
         subdomain = confs['subdomain']
         username = confs['auth']['username']
         password = confs['auth']['password']
+        domain = confs['domain']
     except KeyError as key:
         raise exceptions.AuthFail('no %s set in conf. Please run '
                                   'hoover.authorize' % key.args[0])
     h = Http()
     h.add_credentials(username, password)
-    url = 'https://%s.loggly.com/%s' % (subdomain, endpoint)
+    url = 'https://%s.%s/%s' % (subdomain, domain, endpoint)
     if method == 'GET':
         body = ''
         if params:

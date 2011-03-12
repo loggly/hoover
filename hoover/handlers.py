@@ -3,7 +3,7 @@ library.'''
 import logging
 from logging.handlers import SysLogHandler
 
-from hoover import utils
+from hoover import utils, confs
 
 class LogglyHttpHandler(logging.Handler):
     def __init__ (self, token='', inputname='', input=None, announce=False):
@@ -18,7 +18,7 @@ class LogglyHttpHandler(logging.Handler):
             except:
                 raise ValueError('This is not an HTTP input')
         self.token = token
-        self.endpoint = "https://logs.loggly.com/inputs/%s" % token
+        self.endpoint = "https://%s/inputs/%s" % (confs['proxy'], token)
         # TODO: verify we can write to the input
         if announce:
             # TODO: grab this boxes' IP, and announce logging to the input
@@ -48,5 +48,5 @@ class LogglySyslogHandler(SysLogHandler):
                     utils.api_help('api/inputs/%s/adddevice' % input.id,
                                    method='POST')
         self.port = port
-        SysLogHandler.__init__(self, address=('logs.loggly.com', port),
+        SysLogHandler.__init__(self, address=(confs['proxy'], port),
                                **kwargs)
