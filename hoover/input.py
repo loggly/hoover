@@ -8,10 +8,10 @@ class LogglyInput(object):
     def __repr__(self):
         return "Input:%s" % self.name
 
-    def get_handler(self):
+    def get_handler(self, **kwargs):
         if self.service['name'] == 'HTTP':
-            return LogglyHttpHandler(input=self)
-        return LogglySyslogHandler(input=self)
+            return LogglyHttpHandler(input=self, **kwargs)
+        return LogglySyslogHandler(input=self, **kwargs)
 
     def search(self, q='', **kwargs):
         from hoover.search import search as search_main
