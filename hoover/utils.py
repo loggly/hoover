@@ -9,6 +9,7 @@ import logging
 from hoover import confs, exceptions
 from hoover.exceptions import NotFound
 
+
 def api_help(endpoint, params=None, method='GET'):
     try:
         subdomain = confs['subdomain']
@@ -29,7 +30,7 @@ def api_help(endpoint, params=None, method='GET'):
         body = urlencode(params)
     else:
         body = ''
-    headers, results =  h.request(url, method, body)
+    headers, results = h.request(url, method, body)
     status = headers['status']
     if int(status) == 401:
         raise exceptions.AuthFail('Sorry, your authentication was not '
@@ -40,18 +41,22 @@ def api_help(endpoint, params=None, method='GET'):
     except ValueError:
         return results
 
+
 def inputs_init():
     from hoover.input import LogglyInput
     inputs = api_help('api/inputs')
     confs['inputs'] = [LogglyInput(i) for  i in inputs]
+
 
 def get_inputs():
     if not 'inputs' in confs:
         inputs_init()
     return confs['inputs']
 
+
 def html_inputs():
     return [i for i in get_inputs() if i.service['name'] == 'HTTP']
+
 
 def get_input_by_name(name):
     try:
@@ -59,6 +64,7 @@ def get_input_by_name(name):
     except ValueError:
         raise NotFound('Input %s not found.' % name)
     return result
+
 
 def config_inputs():
     from hoover.handlers import LogglyHttpHandler
@@ -68,11 +74,12 @@ def config_inputs():
         logger = logging.getLogger(input.name)
         logger.addHandler(handler)
 
+
 def async(func):
     '''Awesome decorator for asyncronizing functions.
-
     Don't use this if you care about return value.'''
     from threading import Thread
+
     class FuncRunner(Thread):
         def __init__(self, args, kwargs):
             super(FuncRunner, self).__init__()
@@ -90,6 +97,7 @@ def async(func):
     newfunc.__doc__ = func.__doc__
 
     return newfunc
+
 
 def post_to_endpoint(endpoint, message):
     h = Http()

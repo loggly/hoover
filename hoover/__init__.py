@@ -1,9 +1,11 @@
 '''A handy library for logging to, and searching, Loggly.'''
+
 confs = {
     'domain': 'loggly.com',
     'auth'  : {},
     'proxy' : 'logs.loggly.com',
 }
+
 
 def authorize(subdomain, username, password, domain=None, proxy=None):
     '''pass in subdomain, username, and password to authorize all API
@@ -18,4 +20,3 @@ def authorize(subdomain, username, password, domain=None, proxy=None):
         confs['domain'] = domain
     if proxy:
         confs['proxy'] = proxy
-

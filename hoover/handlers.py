@@ -1,12 +1,13 @@
-'''A couple of logging handlers which should play nicely with the Python logging
-library.'''
+'''A couple of logging handlers which should play nicely with the Python
+logging library.'''
 import logging
 from logging.handlers import SysLogHandler
 
 from hoover import utils, confs
 
+
 class LogglyHttpHandler(logging.Handler):
-    def __init__ (self, token='', inputname='', input=None, announce=False):
+    def __init__(self, token='', inputname='', input=None, announce=False):
         logging.Handler.__init__(self)
         if inputname:
             input = utils.get_input_by_name(inputname)
@@ -28,8 +29,9 @@ class LogglyHttpHandler(logging.Handler):
         msg = self.format(record)
         utils.async_post_to_endpoint(self.endpoint, msg)
 
+
 class LogglySyslogHandler(SysLogHandler):
-    def __init__ (self, port=None, inputname='', input=None, announce=False,
+    def __init__(self, port=None, inputname='', input=None, announce=False,
                   authorize=True, **kwargs):
         #TODO: avoid duplication with __init__ above
         if inputname:
