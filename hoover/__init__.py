@@ -90,9 +90,9 @@ class LogglySession(object):
         kwargs['q'] = q
         return self.api_help('api/facets/%s' % facetby, kwargs)
 
-    def create_input(self, name, service='syslogudp'):
-        result = self.api_help('/api/inputs', {'name': name, 'service': service},
-                               method='POST')
+    def create_input(self, name, service='syslogudp', description=''):
+        params = {'name': name, 'service': service, 'description': description}
+        result = self.api_help('api/inputs', params, method='POST')
         try:
             newinput = LogglyInput(result, self)
         except:
