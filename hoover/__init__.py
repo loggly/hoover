@@ -16,7 +16,8 @@ class LogglySession(object):
     domain = 'loggly.com'
     proxy = 'logs.loggly.com'
 
-    def __init__(self, subdomain, username, password, domain=None, proxy=None):
+    def __init__(self, subdomain, username, password, domain=None, proxy=None,
+                 secure=True):
         '''pass in subdomain, username, and password to authorize all API
         transactions.'''
         self.subdomain = subdomain
@@ -28,11 +29,13 @@ class LogglySession(object):
             self.domain = domain
         if proxy:
             self.proxy = proxy
+        self.protocol = secure and 'https' or 'http'
 
     def api_help(self, endpoint, params=None, method='GET'):
         h = Http()
         h.add_credentials(self.username, self.password)
-        url = 'http://%s.%s/%s' % (self.subdomain, self.domain, endpoint)
+        url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
+                                 endpoint)
         if method == 'GET':
             body = ''
             if params:
