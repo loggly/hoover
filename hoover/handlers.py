@@ -1,6 +1,10 @@
 '''A couple of logging handlers which should play nicely with the Python
 logging library.'''
 import logging
+try:
+    from simplejson import dumps
+except:
+    from json import dumps
 from logging.handlers import SysLogHandler
 from hoover.utils import async_post_to_endpoint
 
@@ -8,7 +12,7 @@ from hoover.utils import async_post_to_endpoint
 
 class LogglyHttpHandler(logging.Handler):
     def __init__(self, session, token='', inputname='', input=None,
-                 announce=False):
+                 announce=False, json_class=None):
         logging.Handler.__init__(self)
         if inputname:
             input = session.get_input_by_name(inputname)
@@ -21,13 +25,17 @@ class LogglyHttpHandler(logging.Handler):
                 raise ValueError('This is not an HTTP input')
         self.token = token
         self.endpoint = "https://%s/inputs/%s" % (session.proxy, token)
+        self.json_class = json_class
         # TODO: verify we can write to the input
         if announce:
             # TODO: grab this boxes' IP, and announce logging to the input
             pass
 
     def emit(self, record):
+        if isinstance(record.msg, (list, dict)):
+            record.msg = dumps(record.msg, cls=self.json_class)
         msg = self.format(record)
+        print msg
         async_post_to_endpoint(self.endpoint, msg)
 
 
