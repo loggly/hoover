@@ -1,6 +1,7 @@
 from functools import wraps
 from httplib2 import Http
 
+
 def async(func):
     '''Awesome decorator for asyncronizing functions.
     Don't use this if you care about return value.'''
@@ -25,6 +26,7 @@ def post_to_endpoint(endpoint, message):
     h = Http()
     h.request(endpoint, 'POST', message)
 async_post_to_endpoint = async(post_to_endpoint)
+
 
 def time_translate(func):
     def new_func(*args, **kwargs):

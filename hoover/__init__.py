@@ -84,7 +84,6 @@ class LogglySession(object):
         kwargs['q'] = q
         return self.api_help('api/search', kwargs)
 
-
     @time_translate
     def facets(self, q='*', facetby='date', **kwargs):
         kwargs['q'] = q

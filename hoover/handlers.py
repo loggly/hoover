@@ -3,11 +3,10 @@ logging library.'''
 import logging
 try:
     from simplejson import dumps
-except:
+except ImportError:
     from json import dumps
 from logging.handlers import SysLogHandler
 from hoover.utils import async_post_to_endpoint
-
 
 
 class LogglyHttpHandler(logging.Handler):
@@ -21,7 +20,7 @@ class LogglyHttpHandler(logging.Handler):
             try:
                 token = input.input_token
                 self.inputname = input.name
-            except:
+            except AttributeError:
                 raise ValueError('This is not an HTTP input')
         self.token = token
         self.endpoint = "https://%s/inputs/%s" % (session.proxy, token)
@@ -50,7 +49,7 @@ class LogglySyslogHandler(SysLogHandler):
             try:
                 port = input.port
                 self.inputname = input.name
-            except:
+            except AttributeError:
                 raise ValueError("This doesn't look like a syslog input")
             if authorize:
                 if port == 514:
