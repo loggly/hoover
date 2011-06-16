@@ -18,11 +18,8 @@ def async(func):
     def newfunc(*args, **kwargs):
         FuncRunner(args, kwargs).start()
 
-    # be nice on the terminal
-    newfunc.__name__ = func.__name__
-    newfunc.__doc__ = func.__doc__
+    return wraps(func)(newfunc)
 
-    return newfunc
 
 def post_to_endpoint(endpoint, message):
     h = Http()
