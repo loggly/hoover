@@ -75,12 +75,9 @@ class LogglySession(object):
         return result
 
     def config_inputs(self):
-        from hoover.handlers import LogglyHttpHandler
-        #for now just does HTML inputs...
-        for input in self.html_inputs():
-            handler = LogglyHttpHandler(self, input=input)
+        for input in self.inputs:
             logger = logging.getLogger(input.name)
-            logger.addHandler(handler)
+            logger.addHandler(input.get_handler())
 
     @time_translate
     def search(self, q='*', **kwargs):
