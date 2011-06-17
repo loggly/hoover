@@ -66,6 +66,7 @@ class LogglySession(object):
         return [i for i in self.inputs if i.service['name'] == 'HTTP']
 
     def get_input_by_name(self, name):
+        '''Locates an input by name. Case insensitive.'''
         try:
             (result,) = [i for i in self.inputs
                          if i.name.lower() == name.lower()]
@@ -82,16 +83,29 @@ class LogglySession(object):
 
     @time_translate
     def search(self, q='*', **kwargs):
+        '''Thin wrapper on Loggly's text search API. First parameter is a query
+        string.'''
         kwargs['q'] = q
         return self._api_help('api/search', kwargs)
 
     @time_translate
     def facets(self, q='*', facetby='date', **kwargs):
+        '''Thin wrapper on Loggly's facet search API. facetby can be input, ip,
+        or a json parameter of the form json.foo'''
         kwargs['q'] = q
         return self._api_help('api/facets/%s' % facetby, kwargs)
 
     def create_input(self, name, service='syslogudp', description='',
                      json=False):
+        '''Creates a new input on your loggly account. Service can be any of:
+            syslogudp
+            syslogtcp
+            syslogudp_strip
+            syslogtcp_strip
+            syslog 514
+            HTTP
+            syslog_tls.
+        JSON can only be used with HTTP inputs.'''
         if json and service.lower() != 'http':
             raise ValueError("only HTTP inputs can use JSON")
         format = json and 'json' or 'text'
