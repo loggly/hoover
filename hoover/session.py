@@ -67,7 +67,8 @@ class LogglySession(object):
 
     def get_input_by_name(self, name):
         try:
-            (result,) = [i for i in self.inputs if i.name == name]
+            (result,) = [i for i in self.inputs
+                         if i.name.lower() == name.lower()]
         except ValueError:
             raise NotFound('Input %s not found.' % name)
         return result
