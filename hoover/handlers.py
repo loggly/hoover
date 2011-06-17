@@ -53,9 +53,9 @@ class LogglySyslogHandler(SysLogHandler):
                 raise ValueError("This doesn't look like a syslog input")
             if authorize:
                 if port == 514:
-                    session.api_help('api/inputs/%s/add514' % input.id)
+                    session._api_help('api/inputs/%s/add514' % input.id)
                 else:
-                    session.api_help('api/inputs/%s/adddevice' % input.id,
+                    session._api_help('api/inputs/%s/adddevice' % input.id,
                                      method='POST')
         self.port = port
         SysLogHandler.__init__(self, address=(session.proxy, port),

@@ -29,7 +29,7 @@ class LogglySession(object):
             self.proxy = proxy
         self.protocol = secure and 'https' or 'http'
 
-    def api_help(self, endpoint, params=None, method='GET'):
+    def _api_help(self, endpoint, params=None, method='GET'):
         h = Http()
         h.add_credentials(self.username, self.password)
         url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
@@ -55,11 +55,11 @@ class LogglySession(object):
     @property
     def inputs(self):
         if not hasattr(self, '_inputs'):
-            self.inputs_init()
+            self._inputs_init()
         return self._inputs
 
-    def inputs_init(self):
-        inputs = self.api_help('api/inputs')
+    def _inputs_init(self):
+        inputs = self._api_help('api/inputs')
         self._inputs = [LogglyInput(i, self) for  i in inputs]
 
     def html_inputs(self):
@@ -73,6 +73,8 @@ class LogglySession(object):
         return result
 
     def config_inputs(self):
+        '''For each input in your loggly account, register a python logger
+        with the input's name logging to the input.'''
         for input in self.inputs:
             logger = logging.getLogger(input.name)
             logger.addHandler(input.get_handler())
@@ -80,12 +82,12 @@ class LogglySession(object):
     @time_translate
     def search(self, q='*', **kwargs):
         kwargs['q'] = q
-        return self.api_help('api/search', kwargs)
+        return self._api_help('api/search', kwargs)
 
     @time_translate
     def facets(self, q='*', facetby='date', **kwargs):
         kwargs['q'] = q
-        return self.api_help('api/facets/%s' % facetby, kwargs)
+        return self._api_help('api/facets/%s' % facetby, kwargs)
 
     def create_input(self, name, service='syslogudp', description='',
                      json=False):
@@ -94,7 +96,7 @@ class LogglySession(object):
         format = json and 'json' or 'text'
         params = {'name': name, 'service': service, 'description': description,
                   'format': format}
-        result = self.api_help('api/inputs', params, method='POST')
+        result = self._api_help('api/inputs', params, method='POST')
         try:
             newinput = LogglyInput(result, self)
         except:

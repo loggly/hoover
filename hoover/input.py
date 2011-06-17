@@ -24,11 +24,11 @@ class LogglyInput(object):
         return self.session.facets(q, **kwargs)
 
     def delete(self):
-        self.session.api_help('api/inputs/%s' % self.id, method='DELETE')
+        self.session._api_help('api/inputs/%s' % self.id, method='DELETE')
         self.session.inputs.remove(self)
 
     def set_discover(self, state=True):
         method = state and 'POST' or 'DELETE'
-        self.session.api_help('api/inputs/%d/discover/' % self.id,
+        self.session._api_help('api/inputs/%d/discover/' % self.id,
                               method=method)
         self.discover = state
