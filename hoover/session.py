@@ -62,7 +62,8 @@ class LogglySession(object):
         inputs = self._api_help('api/inputs')
         self._inputs = [LogglyInput(i, self) for  i in inputs]
 
-    def html_inputs(self):
+    @property
+    def http_inputs(self):
         return [i for i in self.inputs if i.service['name'] == 'HTTP']
 
     def get_input_by_name(self, name):
