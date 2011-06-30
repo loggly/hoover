@@ -1,6 +1,3 @@
-from hoover.handlers import LogglyHttpHandler, LogglySyslogHandler
-
-
 class LogglyInput(object):
     def __init__(self, attributes, session):
         for attr in attributes.keys():
@@ -11,6 +8,7 @@ class LogglyInput(object):
         return "Input:%s" % self.name
 
     def get_handler(self, **kwargs):
+        from hoover.handlers import LogglyHttpHandler, LogglySyslogHandler
         if self.service['name'] == 'HTTP':
             return LogglyHttpHandler(self.session, input=self, **kwargs)
         return LogglySyslogHandler(self.session, input=self, **kwargs)

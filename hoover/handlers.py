@@ -6,14 +6,16 @@ try:
 except ImportError:
     from json import dumps
 from logging.handlers import SysLogHandler
+from hoover.session import LogglySession
 from hoover.utils import async_post_to_endpoint
 
 
 class LogglyHttpHandler(logging.Handler):
-    def __init__(self, session, token='', inputname='', input=None,
+    def __init__(self, session=None, token='', inputname='', input=None,
                  announce=False, json_class=None):
         logging.Handler.__init__(self)
         if inputname:
+            # TODO: raise something appropriate if session is None
             input = session.get_input_by_name(inputname)
         if input:
             self.inputobj = input
@@ -22,6 +24,7 @@ class LogglyHttpHandler(logging.Handler):
                 self.inputname = input.name
             except AttributeError:
                 raise ValueError('This is not an HTTP input')
+        session = session or LogglySession
         self.token = token
         self.endpoint = "https://%s/inputs/%s" % (session.proxy, token)
         self.json_class = json_class
@@ -38,10 +41,11 @@ class LogglyHttpHandler(logging.Handler):
 
 
 class LogglySyslogHandler(SysLogHandler):
-    def __init__(self, session, port=None, inputname='', input=None,
+    def __init__(self, session=None, port=None, inputname='', input=None,
                  announce=False, authorize=True, **kwargs):
         #TODO: avoid duplication with __init__ above
         if inputname:
+            # raise if no session
             input = session.get_input_by_name(inputname)
         if input:
             self.inputobj = input
@@ -52,10 +56,12 @@ class LogglySyslogHandler(SysLogHandler):
                 raise ValueError("This doesn't look like a syslog input")
             if authorize:
                 if port == 514:
+                    # raise if no session
                     session._api_help('api/inputs/%s/add514' % input.id)
                 else:
                     session._api_help('api/inputs/%s/adddevice' % input.id,
                                      method='POST')
         self.port = port
+        session = session or LogglySession
         SysLogHandler.__init__(self, address=(session.proxy, port),
                                **kwargs)
