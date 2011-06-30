@@ -34,7 +34,6 @@ class LogglyHttpHandler(logging.Handler):
         if isinstance(record.msg, (list, dict)):
             record.msg = dumps(record.msg, cls=self.json_class)
         msg = self.format(record)
-        print msg
         async_post_to_endpoint(self.endpoint, msg)
 
 
