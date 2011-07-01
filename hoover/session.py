@@ -1,8 +1,12 @@
+from __future__ import print_function
 from hoover.input import LogglyInput
 from hoover.exceptions import NotFound, AuthFail
 from hoover.utils import time_translate
 import logging
-from urllib import urlencode
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
 from httplib2 import Http
 try:
     from simplejson import loads
@@ -48,7 +52,7 @@ class LogglySession(object):
             raise AuthFail('Sorry, your authentication was not accepted.')
         # TODO check status, raise appropriate errors or something
         try:
-            return loads(results)
+            return loads(results.decode('utf-8'))
         except ValueError:
             return results
 
