@@ -1,4 +1,3 @@
-from __future__ import print_function
 from hoover.input import LogglyInput
 from hoover.exceptions import NotFound, AuthFail
 from hoover.utils import time_translate
