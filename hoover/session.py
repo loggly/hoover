@@ -69,6 +69,10 @@ class LogglySession(object):
     def http_inputs(self):
         return [i for i in self.inputs if i.service['name'] == 'HTTP']
 
+    def http_input_token(self, name):
+        k = self.get_input_by_name(name)
+        return k.input_token 
+
     def get_input_by_name(self, name):
         '''Locates an input by name. Case insensitive.'''
         try:
