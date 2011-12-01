@@ -22,8 +22,14 @@ def async(func):
     return wraps(func)(newfunc)
 
 
-def post_to_endpoint(endpoint, message):
+def post_to_endpoint(endpoint, message, encoding='utf-8'):
     h = Http()
+    # If unicode, try to encode
+    if isinstance(message, unicode):
+        try:
+            message = message.encode(encoding)
+        except UnicodeEncodeError:
+            pass
     h.request(endpoint, 'POST', message)
 async_post_to_endpoint = async(post_to_endpoint)
 
