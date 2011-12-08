@@ -3,7 +3,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from hoover import __version__
+from hoover.version import __version__
 
 setup(name='Hoover',
       version=__version__,

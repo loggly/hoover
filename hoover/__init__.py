@@ -2,5 +2,5 @@
 
 from hoover.session import LogglySession
 from hoover.handlers import LogglyHttpHandler, LogglySyslogHandler
+from hoover.version import __version__
 
-__version__ = '0.5.3'
