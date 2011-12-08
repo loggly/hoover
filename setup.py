@@ -3,10 +3,8 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from hoover.version import __version__
-
 setup(name='Hoover',
-      version=__version__,
+      version='0.5.3',
       description="Library for logging to Loggly from within Python webapps",
       author="Mike Blume",
       author_email="mike@loggly.com",
