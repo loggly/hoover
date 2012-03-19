@@ -113,9 +113,7 @@ class LogglySession(object):
             syslog 514
             HTTP
             syslog_tls.
-        JSON can only be used with HTTP inputs.'''
-        if json and service.lower() != 'http':
-            raise ValueError("only HTTP inputs can use JSON")
+        '''
         format = json and 'json' or 'text'
         params = {'name': name, 'service': service, 'description': description,
                   'format': format}
