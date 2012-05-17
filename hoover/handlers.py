@@ -1,6 +1,6 @@
 '''A couple of logging handlers which should play nicely with the Python
 logging library.'''
-import logging
+import sys, logging, socket
 try:
     from simplejson import dumps
 except ImportError:
@@ -63,6 +63,9 @@ class LogglySyslogHandler(SysLogHandler):
                 else:
                     session._api_help('api/inputs/%s/adddevice' % input.id,
                                      method='POST')
+            if ('tcp' in input.service['name'] and sys.version_info >= (2, 7)
+                    and not 'socktype' in kwargs):
+                kwargs['socktype'] = socket.SOCK_STREAM
         self.port = port
         session = session or LogglySession
         SysLogHandler.__init__(self, address=(session.proxy, port),
