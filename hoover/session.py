@@ -103,6 +103,24 @@ class LogglySession(object):
         kwargs['q'] = q
         return self._api_help('api/facets/%s' % facetby, kwargs)
 
+    @time_translate
+    def savedsearch(self,q="",**_kwargs):
+        """
+        Runs one of your saved searches
+        """
+        query=Http(timeput=10)
+        resp, cont=query.request("http://"+self.subdomain+"loggly.com/api/savedsearches","GET")
+        content=json.loads(cont)
+        saved=None
+        for search in content:
+            if search['name']=q:
+               saved=search
+        if saved==None:
+            raise ValueError("Your account does not have a search of that name,\
+            please go to "+self.subdomain+".loggly.com to check your saved searches")
+        
+        
+        
     def create_input(self, name, service='syslogudp', description='',
                      json=False):
         '''Creates a new input on your loggly account. Service can be any of:
