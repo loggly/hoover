@@ -16,7 +16,7 @@ except ImportError:
 class LogglySession(object):
     domain = 'loggly.com'
     proxy = 'logs.loggly.com'
-    ssdict={'order':'order','from':'starttime','rows':'rows','until':'endtime',
+    ssdict={'order':'order','from':'starttime','rows':'rows','until':'endtime'}
     def __init__(self, subdomain, username, password, domain=None, proxy=None,
                  secure=True):
         '''pass in subdomain, username, and password to authorize all API
@@ -113,7 +113,7 @@ class LogglySession(object):
         content=json.loads(cont)
         saved=None
         for search in content:
-            if search['name']=q:
+            if search['name']==q:
                saved=search
         if saved==None:
             raise ValueError("Your account does not have a search of that name,\
