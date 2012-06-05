@@ -127,15 +127,9 @@ class LogglySession(object):
             if x!="terms" and x!="inputs" and x!="devices":
                 opts[self.ssdict[x]]=params[x]
         if params['inputs']:
-            inputs+=" AND (inputname:"+params['inputs'][0]
-            for x in params['inputs'].__iter__().next():
-                inputs+=" OR inputname:"+x
-            inputs+=")"
+            inputs+=" AND (inputname:"+" OR inputname:".join(params['inputs'])+")"
         if params['devices']:
-            devices+=" AND (ip:"+params['devices'][0]
-            for x in params['devices'].__iter__().next():
-                devices+=" OR ip:"+x
-            devices+=")"
+            devices+=" AND (ip:"+" OR ip:".join(params['devices'])+")"
         return self.search(q=params['terms']+inputs+devices,**opts)
         
         
