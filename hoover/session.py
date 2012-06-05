@@ -108,9 +108,10 @@ class LogglySession(object):
         """
         Runs one of your saved searches
         """
-        query=Http(timeput=10)
-        resp, cont=query.request("http://"+self.subdomain+"loggly.com/api/savedsearches","GET")
-        content=json.loads(cont)
+        query=Http(timeout=10)
+        query.add_credentials(self.username,self.password)
+        resp, cont=query.request("http://"+self.subdomain+".loggly.com/api/savedsearches","GET")
+        content=loads(cont)
         saved=None
         for search in content:
             if search['name']==q:
@@ -123,8 +124,8 @@ class LogglySession(object):
         inputs=""
         devices=""
         for x in params:
-            if x!="content" and x!="inputs" and x!="devices":
-                opts[ssdict[x]]=params[x]
+            if x!="terms" and x!="inputs" and x!="devices":
+                opts[self.ssdict[x]]=params[x]
         if params['inputs']:
             inputs+=" AND (inputname:"+params['inputs'][0]
             for x in params['inputs'].__iter__().next():
