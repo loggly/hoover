@@ -142,7 +142,7 @@ class LogglySession(object):
         query.add_credentials(self.username,self.password)
         resp, cont=query.request("http://"+self.subdomain+".loggly.com/api/savedsearches","GET")
         content=loads(cont)
-        names=[for _ in content['name']]
+        names=[x['name'] for x in content]
         return names
         
         
