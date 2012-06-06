@@ -104,7 +104,7 @@ class LogglySession(object):
         return self._api_help('api/facets/%s' % facetby, kwargs)
 
     @time_translate
-    def savedsearch(self,q="",**_kwargs):
+    def savedsearch(self,q=""):
         """
         Runs one of your saved searches
         """
@@ -131,7 +131,13 @@ class LogglySession(object):
         if params['devices']:
             devices+=" AND (ip:"+" OR ip:".join(params['devices'])+")"
         return self.search(q=params['terms']+inputs+devices,**opts)
-        
+    def findsavedsearchnames(self):
+        query=Http(timeout=10)
+        query.add_credentials(self.username,self.password)
+        resp, cont=query.request("http://"+self.subdomain+".loggly.com/api/savedsearches","GET")
+        content=loads(cont)
+        names=[x['name'] for x in content]
+        return names
         
         
     def create_input(self, name, service='syslogudp', description='',
