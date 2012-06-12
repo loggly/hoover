@@ -1,7 +1,7 @@
 #Hoover
 
 
-A python wrapper used to hit the Loggly API
+A python wrapper used to hit the [Loggly](http://loggly.com "Loggly"). API 
 
 For more information on Hoover see <http://wiki.loggly.com/hooverguide>
 
@@ -16,9 +16,7 @@ With this git repo:
 Easy Install:
 	$easy_install -U hoover
 
-Pypi:
-
-<http://pypi.python.org/pypi/Hoover>
+Pypi: <http://pypi.python.org/pypi/Hoover>
 
 
 
@@ -40,6 +38,7 @@ Enter your credentials in hoover.LogglySession after importing:
 
 ##Search Properties
 
+For more details on using search within Loggly check out <http://wiki.loggly.com/searchguide>
 
 <table>
   <tr>
@@ -56,7 +55,7 @@ Enter your credentials in hoover.LogglySession after importing:
   </tr>
   <tr>
      <td>starttime</td>
-     <td><Start time for the search.  Defaults to NOW-24HOURS.</td>
+     <td>Start time for the search.  Defaults to NOW-24HOURS.</td>
   </tr>
   <tr>
      <td>endtime</td>
@@ -81,16 +80,6 @@ Enter your credentials in hoover.LogglySession after importing:
   </tr>
 </table>
 
-##Search Guide
-
-
-Be Aware:
-
-* Does not support case-sensitive searches. Everything is case-insensitive.
-* Punctuations are not search-able. For example, '[' or ']' are not indexed, so a search for: '[error]' is the same as a search for 'error'
-* Right now, we break on case-changes or changes from numerical to alpha characters. So, a search for 'www' will find results containing 'www111' or 'www112ww'.
-
-
 ##More Functions
 
 <table>
@@ -101,23 +90,28 @@ Be Aware:
   </tr>
    <tr>
      <td>*.config_inputs()</td>
-     <td></td>
+     <td>Configures each input in your loggly account, register a python logger
+        with the input's name logging to the input.</td>
   </tr>
    <tr>
      <td>*.create_input()</td>
-     <td></td>
+     <td>Creates a new input on your loggly account.</td>
   </tr>
    <tr>
      <td>*.facets()</td>
-     <td></td>
+     <td>Thin wrapper on Loggly's facet search API. facetby can be input, ip, or date</td>
   </tr>
   <tr>
      <td>*.http_inputs()</td>
-     <td></td>
+     <td>Lists all http inputs</td>
   </tr>
   <tr>
      <td>*.search()</td>
-     <td></td>
+     <td>See above "Search Properties"</td>
+  </tr>
+  <tr>
+     <td>*.inputs</td>
+     <td>Lists all inputs</td>
   </tr>
 </table>
 
