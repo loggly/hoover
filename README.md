@@ -1,19 +1,33 @@
-Hoover
-=====
+#Hoover
+
 
 A python wrapper used to hit the Loggly API
 
 For more information on Hoover see <http://wiki.loggly.com/hooverguide>
 
-Install
--------
+##Install
+
+With this git repo:
+	cd /hoover
+	sudo python setup.py install
+	
+	
+
+Easy Install:
+	$easy_install -U hoover
+
+Pypi:
+
+<http://pypi.python.org/pypi/Hoover>
 
 
 
-Using Hoover
-------------
+##Using Hoover
 
-First you'll want to create a Loggly Session that will hold your subdomain, username, and password:
+
+Enter your credentials in hoover.LogglySession after importing:
+
+	
 	import hoover
 	.
 	.
@@ -22,10 +36,10 @@ First you'll want to create a Loggly Session that will hold your subdomain, user
 
 	i.search(q='apache2 error', starttime='NOW-2DAYS', format='csv')
 	i.search(q='json.priority:err', starttime='NOW-15MINUTES') #Defaults to json if format is left out
-	
 
-Search Properties
------------------
+
+##Search Properties
+
 
 <table>
   <tr>
@@ -67,9 +81,46 @@ Search Properties
   </tr>
 </table>
 
+##Search Guide
 
-Python Logging
---------------
+
+Be Aware:
+
+* Does not support case-sensitive searches. Everything is case-insensitive.
+* Punctuations are not search-able. For example, '[' or ']' are not indexed, so a search for: '[error]' is the same as a search for 'error'
+* Right now, we break on case-changes or changes from numerical to alpha characters. So, a search for 'www' will find results containing 'www111' or 'www112ww'.
+
+
+##More Functions
+
+<table>
+  
+   <tr>
+     <td>Function</td>
+     <td>Description</td>
+  </tr>
+   <tr>
+     <td>*.config_inputs()</td>
+     <td></td>
+  </tr>
+   <tr>
+     <td>*.create_input()</td>
+     <td></td>
+  </tr>
+   <tr>
+     <td>*.facets()</td>
+     <td></td>
+  </tr>
+  <tr>
+     <td>*.http_inputs()</td>
+     <td></td>
+  </tr>
+  <tr>
+     <td>*.search()</td>
+     <td></td>
+  </tr>
+</table>
+
 
 Meta
 ----
