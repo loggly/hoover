@@ -29,7 +29,7 @@ def post_to_endpoint(endpoint, message, encoding='utf-8'):
             message = message.encode(encoding)
         except UnicodeEncodeError:
             pass
-    requests.post(endpoint, message)
+    requests.post(endpoint, message, verify=True)
 async_post_to_endpoint = async(post_to_endpoint)
 
 
