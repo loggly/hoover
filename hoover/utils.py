@@ -1,5 +1,5 @@
 from functools import wraps
-from httplib2 import Http
+import requests
 
 
 def async(func):
@@ -23,14 +23,13 @@ def async(func):
 
 
 def post_to_endpoint(endpoint, message, encoding='utf-8'):
-    h = Http()
     # If unicode, try to encode
     if isinstance(message, unicode):
         try:
             message = message.encode(encoding)
         except UnicodeEncodeError:
             pass
-    h.request(endpoint, 'POST', message)
+    requests.post(endpoint, message, verify=True)
 async_post_to_endpoint = async(post_to_endpoint)
 
 
