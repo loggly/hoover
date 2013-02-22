@@ -33,6 +33,7 @@ class LogglySession(object):
         self.protocol = secure and 'https' or 'http'
 
     def _api_help(self, endpoint, params=None, method='GET'):
+        import ipdb; ipdb.set_trace()
         s = requests.Session()
         s.auth = (self.username, self.password)
         url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
@@ -41,7 +42,7 @@ class LogglySession(object):
         if params and method != 'GET':
             body = urlencode(params)
             params = None
-        response = s.request(method, url, data=body, verify=True)
+        response = s.request(method, url, params=params, data=body, verify=True)
         response.raise_for_status()
         return response.json()
 
