@@ -12,7 +12,7 @@ from hoover.utils import async_post_to_endpoint
 
 class LogglyHttpHandler(logging.Handler):
     def __init__(self, session=None, token='', inputname='', input=None,
-                 announce=False, json_class=None, secure=True, proxy=None, tag=None):
+                 announce=False, json_class=None, secure=True, proxy=None, tag=''):
         logging.Handler.__init__(self)
         if inputname:
             # TODO: raise something appropriate if session is None
