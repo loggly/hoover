@@ -20,7 +20,7 @@ Pypi: <http://pypi.python.org/pypi/Hoover>
 
 
 
-##Using Hoover
+##Using Hoover For Searching Loggly
 
 
 Enter your credentials in hoover.LogglySession after importing:
@@ -35,6 +35,18 @@ Enter your credentials in hoover.LogglySession after importing:
 	i.search(q='apache2 error', starttime='NOW-2DAYS', format='csv')
 	i.search(q='json.priority:err', starttime='NOW-15MINUTES') #Defaults to json if format is left out
 
+##Using Hoover For Logging to Loggly's New API
+
+	import logging
+	from hoover.handlers import LogglyHttpHandler
+	.
+	.
+	.
+	token_and_suffix = "{token}/tag/http'.format(token=YOUR_LOGGLY_TOKEN_FROM_SOURCE_SETUP)
+	loggly_handler = LogglyHttpHandler(token=token_and_suffix, proxy='logs-01.loggly.com')
+	logger = logging.getLogger('default')
+	logger.addHandler(loggly_handler)
+	logger.critical("This goes straight to my Loggly!")
 
 ##Search Properties
 
