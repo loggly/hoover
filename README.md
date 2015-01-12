@@ -42,7 +42,7 @@ Enter your credentials in hoover.LogglySession after importing:
 	.
 	.
 	.
-	token_and_suffix = "{token}/tag/http'.format(token=YOUR_LOGGLY_TOKEN_FROM_SOURCE_SETUP)
+	token_and_suffix = "{token}/tag/http".format(token=YOUR_LOGGLY_TOKEN_FROM_SOURCE_SETUP)
 	loggly_handler = LogglyHttpHandler(token=token_and_suffix, proxy='logs-01.loggly.com')
 	logger = logging.getLogger('default')
 	logger.addHandler(loggly_handler)
