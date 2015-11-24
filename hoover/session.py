@@ -2,11 +2,14 @@ from hoover.input import LogglyInput
 from hoover.exceptions import NotFound, AuthFail
 from hoover.utils import time_translate
 import logging
+
 try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
 import requests
+import requests.exceptions
+
 try:
     from simplejson import loads
 except ImportError:
@@ -52,7 +55,7 @@ class LogglySession(object):
         return self._inputs
 
     def _inputs_init(self):
-        inputs = self._api_help('api/inputs')
+        inputs = self._api_help('apiv2/inputs')
         self._inputs = [LogglyInput(i, self) for  i in inputs]
 
     @property
@@ -84,14 +87,30 @@ class LogglySession(object):
         '''Thin wrapper on Loggly's text search API. First parameter is a query
         string.'''
         kwargs['q'] = q
-        return self._api_help('api/search', kwargs)
+        return self._api_help('apiv2/search', kwargs)
+
+    def events(self, search_result, num_retries=5, **kwargs):
+        '''Thin wrapper on Loggly's  events API. First parameter is the result from search.'''
+        kwargs['rsid'] = search_result['rsid']['id']
+
+        # large requests may take some time
+        retries = 0
+        while retries < num_retries:
+            try:
+                return self._api_help('apiv2/events', kwargs)
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 504:
+                    logging.getLogger('hoover').info('Retrying due to request timeout')
+                    retries += 1
+                else:
+                    raise
 
     @time_translate
     def facets(self, q='*', facetby='date', **kwargs):
         '''Thin wrapper on Loggly's facet search API. facetby can be input, ip,
         or a json parameter of the form json.foo'''
         kwargs['q'] = q
-        return self._api_help('api/facets/%s' % facetby, kwargs)
+        return self._api_help('apiv2/facets/%s' % facetby, kwargs)
 
     def create_input(self, name, service='syslogudp', description='',
                      json=False):
@@ -107,7 +126,7 @@ class LogglySession(object):
         format = json and 'json' or 'text'
         params = {'name': name, 'service': service, 'description': description,
                   'format': format}
-        result = self._api_help('api/inputs', params, method='POST')
+        result = self._api_help('apiv2/inputs', params, method='POST')
         try:
             newinput = LogglyInput(result, self)
         except:
