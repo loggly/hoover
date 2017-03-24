@@ -35,18 +35,22 @@ class LogglySession(object):
             self.proxy = proxy
         self.protocol = secure and 'https' or 'http'
 
-    def _api_help(self, endpoint, params=None, method='GET'):
+    def _do_api_req(self, method, url, params=None, body=''):
         s = requests.Session()
         s.auth = (self.username, self.password)
-        url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
-                                 endpoint)
-        body = ''
-        if params and method != 'GET':
-            body = urlencode(params)
-            params = None
         response = s.request(method, url, params=params, data=body, verify=True)
         response.raise_for_status()
         return response.json()
+
+
+    def _api_help(self, endpoint, params=None, method='GET'):
+        url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
+                                 endpoint)
+
+        if params and method != 'GET':
+            return self._do_api_req(method, url, None, urlencode(params))
+
+        return self._do_api_req(method, url, params)
 
     @property
     def inputs(self):
@@ -81,6 +85,21 @@ class LogglySession(object):
         for input in self.inputs:
             logger = logging.getLogger(input.name)
             logger.addHandler(input.get_handler())
+
+    @time_translate
+    def search_iterator(self, q='*', **kwargs):
+        """Thin wrapper on Loggly's text search iterator API. First parameter is a query
+        string."""
+        kwargs['q'] = q
+        response = self._api_help('apiv2/events/iterate', kwargs)
+        yield response['events']
+
+        while response.get('next'):
+            response = self._do_api_req('GET', response.get('next'))
+
+            if response.get('events'): # last one may be empty
+                yield response['events']
+
 
     @time_translate
     def search(self, q='*', **kwargs):
