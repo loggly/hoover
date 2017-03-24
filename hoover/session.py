@@ -84,13 +84,13 @@ class LogglySession(object):
 
     @time_translate
     def search(self, q='*', **kwargs):
-        '''Thin wrapper on Loggly's text search API. First parameter is a query
-        string.'''
+        """Thin wrapper on Loggly's text search API. First parameter is a query
+        string."""
         kwargs['q'] = q
         return self._api_help('apiv2/search', kwargs)
 
     def events(self, search_result, num_retries=5, **kwargs):
-        '''Thin wrapper on Loggly's  events API. First parameter is the result from search.'''
+        """Thin wrapper on Loggly's  events API. First parameter is the result from search."""
         kwargs['rsid'] = search_result['rsid']['id']
 
         # large requests may take some time
