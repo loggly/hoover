@@ -121,4 +121,4 @@ Meta
 
 Created and maintained by Mike Blume
 
-If you have questions contact support@loggly.com
+If you have questions contact technicalsupport@solarwinds.com
