@@ -3,8 +3,6 @@
 
 A python wrapper used to hit the [Loggly](http://loggly.com "Loggly"). API 
 
-For more information on Hoover see <http://wiki.loggly.com/hooverguide>
-
 ##Install
 
 With this git repo:
