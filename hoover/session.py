@@ -16,7 +16,7 @@ except ImportError:
 class LogglySession(object):
     domain = 'loggly.com'
     proxy = 'logs.loggly.com'
-
+    ssdict={'order':'order','from':'starttime','rows':'rows','until':'endtime'}
     def __init__(self, subdomain, username, password, domain=None, proxy=None,
                  secure=True):
         '''pass in subdomain, username, and password to authorize all API
@@ -93,6 +93,43 @@ class LogglySession(object):
         kwargs['q'] = q
         return self._api_help('api/facets/%s' % facetby, kwargs)
 
+    @time_translate
+    def savedsearch(self,q=""):
+        """
+        Runs one of your saved searches
+        """
+        query=Http(timeout=10)
+        query.add_credentials(self.username,self.password)
+        resp, cont=query.request("http://"+self.subdomain+".loggly.com/api/savedsearches","GET")
+        content=loads(cont)
+        saved=None
+        for search in content:
+            if search['name']==q:
+               saved=search
+        if saved==None:
+            raise ValueError("Your account does not have a search of that name,\
+            please go to "+self.subdomain+".loggly.com to check your saved searches")
+        params=saved['context']
+        opts={}
+        inputs=""
+        devices=""
+        for x in params:
+            if x!="terms" and x!="inputs" and x!="devices":
+                opts[self.ssdict[x]]=params[x]
+        if params['inputs']:
+            inputs+=" AND (inputname:"+" OR inputname:".join(params['inputs'])+")"
+        if params['devices']:
+            devices+=" AND (ip:"+" OR ip:".join(params['devices'])+")"
+        return self.search(q=params['terms']+inputs+devices,**opts)
+    def findsavedsearchnames(self):
+        query=Http(timeout=10)
+        query.add_credentials(self.username,self.password)
+        resp, cont=query.request("http://"+self.subdomain+".loggly.com/api/savedsearches","GET")
+        content=loads(cont)
+        names=[x['name'] for x in content]
+        return names
+        
+        
     def create_input(self, name, service='syslogudp', description='',
                      json=False):
         '''Creates a new input on your loggly account. Service can be any of:

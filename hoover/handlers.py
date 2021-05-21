@@ -42,7 +42,7 @@ class LogglyHttpHandler(logging.Handler):
         async_post_to_endpoint(self.endpoint, msg)
 
 
-class LogglySyslogHandler(SysLogHandler):
+class LogglySyslogHandler(logging.handlers.SysLogHandler):
     def __init__(self, session=None, port=None, inputname='', input=None,
                  announce=False, authorize=True, **kwargs):
         #TODO: avoid duplication with __init__ above
@@ -66,7 +66,19 @@ class LogglySyslogHandler(SysLogHandler):
             if ('tcp' in input.service['name'] and sys.version_info >= (2, 7)
                     and not 'socktype' in kwargs):
                 kwargs['socktype'] = socket.SOCK_STREAM
+                self.socktype=socket.SOCK_STREAM
+            else:
+                self.socktype=socket.SOCK_DGRAM
         self.port = port
-        session = session or LogglySession
-        SysLogHandler.__init__(self, address=(session.proxy, port),
+        self.session = session or LogglySession
+        SysLogHandler.__init__(self, address=(self.session.proxy, self.port),
                                **kwargs)
+
+    def emit(self, record):
+        if isinstance(record.msg, (list, dict)):
+            record.msg = dumps(record.msg, cls=self.json_class, default=str)
+        msg = self.format(record)
+        sock=socket.socket(socket.AF_INET,self.socktype)
+        sock.connect((self.session.proxy,self.port))
+        sock.sendall(msg+'\n')
+        sock.close()
