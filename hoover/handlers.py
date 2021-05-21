@@ -1,6 +1,9 @@
 '''A couple of logging handlers which should play nicely with the Python
 logging library.'''
 import sys, logging, socket
+
+import copy
+
 try:
     from simplejson import dumps
 except ImportError:
@@ -37,6 +40,8 @@ class LogglyHttpHandler(logging.Handler):
 
     def emit(self, record):
         if isinstance(record.msg, (list, dict)):
+            # prevent sideffect for other handlers processing the same record.
+            record = copy.copy(record)
             record.msg = dumps(record.msg, cls=self.json_class, default=str)
         msg = self.format(record)
         async_post_to_endpoint(self.endpoint, msg)
