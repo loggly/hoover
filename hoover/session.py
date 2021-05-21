@@ -2,11 +2,14 @@ from hoover.input import LogglyInput
 from hoover.exceptions import NotFound, AuthFail
 from hoover.utils import time_translate
 import logging
+
 try:
     from urllib import urlencode
 except ImportError:
     from urllib.parse import urlencode
 import requests
+import requests.exceptions
+
 try:
     from simplejson import loads
 except ImportError:
@@ -32,18 +35,22 @@ class LogglySession(object):
             self.proxy = proxy
         self.protocol = secure and 'https' or 'http'
 
-    def _api_help(self, endpoint, params=None, method='GET'):
+    def _do_api_req(self, method, url, params=None, body=''):
         s = requests.Session()
         s.auth = (self.username, self.password)
-        url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
-                                 endpoint)
-        body = ''
-        if params and method != 'GET':
-            body = urlencode(params)
-            params = None
         response = s.request(method, url, params=params, data=body, verify=True)
         response.raise_for_status()
         return response.json()
+
+
+    def _api_help(self, endpoint, params=None, method='GET'):
+        url = '%s://%s.%s/%s' % (self.protocol, self.subdomain, self.domain,
+                                 endpoint)
+
+        if params and method != 'GET':
+            return self._do_api_req(method, url, None, urlencode(params))
+
+        return self._do_api_req(method, url, params)
 
     @property
     def inputs(self):
@@ -52,7 +59,7 @@ class LogglySession(object):
         return self._inputs
 
     def _inputs_init(self):
-        inputs = self._api_help('api/inputs')
+        inputs = self._api_help('apiv2/inputs')
         self._inputs = [LogglyInput(i, self) for  i in inputs]
 
     @property
@@ -80,18 +87,49 @@ class LogglySession(object):
             logger.addHandler(input.get_handler())
 
     @time_translate
-    def search(self, q='*', **kwargs):
-        '''Thin wrapper on Loggly's text search API. First parameter is a query
-        string.'''
+    def search_iterator(self, q='*', **kwargs):
+        """Thin wrapper on Loggly's text search iterator API. First parameter is a query
+        string."""
         kwargs['q'] = q
-        return self._api_help('api/search', kwargs)
+        response = self._api_help('apiv2/events/iterate', kwargs)
+        yield response['events']
+
+        while response.get('next'):
+            response = self._do_api_req('GET', response.get('next'))
+
+            if response.get('events'): # last one may be empty
+                yield response['events']
+
+
+    @time_translate
+    def search(self, q='*', **kwargs):
+        """Thin wrapper on Loggly's text search API. First parameter is a query
+        string."""
+        kwargs['q'] = q
+        return self._api_help('apiv2/search', kwargs)
+
+    def events(self, search_result, num_retries=5, **kwargs):
+        """Thin wrapper on Loggly's  events API. First parameter is the result from search."""
+        kwargs['rsid'] = search_result['rsid']['id']
+
+        # large requests may take some time
+        retries = 0
+        while retries < num_retries:
+            try:
+                return self._api_help('apiv2/events', kwargs)
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 504:
+                    logging.getLogger('hoover').info('Retrying due to request timeout')
+                    retries += 1
+                else:
+                    raise
 
     @time_translate
     def facets(self, q='*', facetby='date', **kwargs):
         '''Thin wrapper on Loggly's facet search API. facetby can be input, ip,
         or a json parameter of the form json.foo'''
         kwargs['q'] = q
-        return self._api_help('api/facets/%s' % facetby, kwargs)
+        return self._api_help('apiv2/facets/%s' % facetby, kwargs)
 
     def create_input(self, name, service='syslogudp', description='',
                      json=False):
@@ -107,7 +145,7 @@ class LogglySession(object):
         format = json and 'json' or 'text'
         params = {'name': name, 'service': service, 'description': description,
                   'format': format}
-        result = self._api_help('api/inputs', params, method='POST')
+        result = self._api_help('apiv2/inputs', params, method='POST')
         try:
             newinput = LogglyInput(result, self)
         except:
